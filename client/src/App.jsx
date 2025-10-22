@@ -1,16 +1,17 @@
 import { BrowserRouter as Router, Routes, Route, useParams, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Room from "./pages/Room";
+import Layout from "./components/Layout";
 
 function App() {
   return (
     <Router>
-      <div className="App">
+      <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/room/:roomId" element={<RoomWrapper />} />
         </Routes>
-      </div>
+      </Layout>
     </Router>
   );
 }

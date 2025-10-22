@@ -18,10 +18,11 @@ export default function initSocketHandlers(io) {
         
         const room = roomManager.getRoom(roomId);
         
-        // Notify room about new user
+        // Notify room about new user and send updated participants
         socket.to(roomId).emit('user-joined', { 
           username: user, 
-          participantCount: room.participants.size 
+          participantCount: room.participants.size,
+          participants: roomManager.getParticipants(roomId)
         });
 
         // Send current room state to new user
@@ -92,6 +93,39 @@ export default function initSocketHandlers(io) {
       }
     });
 
+    // Handle ending quiz (host only)
+    socket.on('end-quiz', (data) => {
+      const { roomId } = data;
+      
+      try {
+        const room = roomManager.getRoom(roomId);
+        if (!room) {
+          socket.emit('error', { message: 'Room not found' });
+          return;
+        }
+
+        // Check if user is the host
+        if (room.hostId !== socket.id) {
+          socket.emit('error', { message: 'Only the host can end the quiz' });
+          return;
+        }
+
+        // End the quiz
+        room.gameState = 'finished';
+        const leaderboard = roomManager.getLeaderboard(roomId);
+        
+        // Notify all participants
+        io.to(roomId).emit('quiz-ended', {
+          leaderboard: leaderboard
+        });
+
+        console.log(`Quiz ended in room ${roomId}`);
+      } catch (error) {
+        console.error('Error ending quiz:', error);
+        socket.emit('error', { message: error.message });
+      }
+    });
+
     // Handle disconnection
     socket.on('disconnect', () => {
       console.log('User disconnected:', socket.id);
@@ -104,10 +138,11 @@ export default function initSocketHandlers(io) {
           const participant = roomManager.removeParticipant(roomInfo.id, socket.id);
           
           if (participant) {
-            // Notify room about user leaving
+            // Notify room about user leaving and send updated participants
             socket.to(roomInfo.id).emit('user-left', {
               username: participant.username,
-              participantCount: room.participants.size
+              participantCount: room.participants.size,
+              participants: roomManager.getParticipants(roomInfo.id)
             });
 
             // Update leaderboard

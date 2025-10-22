@@ -67,13 +67,78 @@ export default function Home() {
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
-            <div className="max-w-md w-full">
-                <div className="bg-white rounded-lg shadow-xl p-8">
-                    <div className="text-center mb-8">
-                        <h1 className="text-3xl font-bold text-gray-800 mb-2">AptitudeArena</h1>
-                        <p className="text-gray-600">Join or create a quiz room</p>
+        <div className="">
+            {/* Hero */}
+            <section className="relative overflow-hidden">
+                <div className="absolute inset-0 -z-10 bg-gradient-to-br from-indigo-50 via-purple-50 to-pink-50" />
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-24">
+                    <div className="grid lg:grid-cols-2 gap-12 items-center">
+                        <div>
+                            <h1 className="text-4xl sm:text-5xl font-extrabold tracking-tight text-gray-900">
+                                Master aptitude skills through
+                                <span className="block bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600">real-time competition</span>
+                            </h1>
+                            <p className="mt-4 text-lg text-gray-600">Test your logical reasoning, quantitative aptitude, and analytical skills in live quiz rooms. Perfect for interview prep, academic assessment, and skill development.</p>
+                            <div className="mt-8 flex items-center gap-4">
+                                <a href="#get-started" className="inline-flex items-center rounded-md bg-indigo-600 px-5 py-3 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700">Get Started</a>
+                                <a href="#features" className="text-sm font-semibold text-gray-700 hover:text-gray-900">Learn more →</a>
+                            </div>
+                        </div>
+                        <div className="relative">
+                            <div className="rounded-2xl border border-gray-200 shadow-xl bg-white p-6">
+                                <div className="flex items-center justify-between">
+                                    <div>
+                                        <p className="text-sm text-gray-500">Live Room</p>
+                                        <p className="text-lg font-semibold text-gray-900">AptitudeArena</p>
+                                    </div>
+                                    <span className="inline-flex items-center rounded-md bg-green-50 px-2 py-1 text-xs font-medium text-green-700 ring-1 ring-inset ring-green-600/20">Online</span>
+                                </div>
+                                <div className="mt-6 grid grid-cols-2 gap-4 text-sm">
+                                    <div className="p-3 rounded-lg bg-gray-50">
+                                        <p className="text-gray-500">Participants</p>
+                                        <p className="text-2xl font-bold">8</p>
+                                    </div>
+                                    <div className="p-3 rounded-lg bg-gray-50">
+                                        <p className="text-gray-500">Questions</p>
+                                        <p className="text-2xl font-bold">10</p>
+                                    </div>
+                                </div>
+                                <div className="mt-6 h-2 w-full bg-gray-100 rounded-full overflow-hidden">
+                                    <div className="h-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 w-1/3" />
+                                </div>
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </section>
+
+            {/* Features */}
+            <section id="features" className="py-16">
+                <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                    <div className="grid md:grid-cols-3 gap-6">
+                        {[
+                            { title: "Logical Reasoning", desc: "Test deductive and inductive reasoning skills with pattern recognition.", icon: "🧠" },
+                            { title: "Quantitative Aptitude", desc: "Master math problems, percentages, ratios, and data interpretation.", icon: "📊" },
+                            { title: "Analytical Thinking", desc: "Solve complex problems with structured thinking and analysis.", icon: "🔍" },
+                        ].map((f) => (
+                            <div key={f.title} className="rounded-xl bg-white border border-gray-200 p-6 shadow-sm hover:shadow-md transition">
+                                <div className="text-3xl">{f.icon}</div>
+                                <h3 className="mt-3 text-lg font-semibold text-gray-900">{f.title}</h3>
+                                <p className="mt-2 text-sm text-gray-600">{f.desc}</p>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Create / Join Card */}
+            <section id="get-started" className="py-8">
+                <div className="max-w-md mx-auto px-4">
+                    <div className="bg-white rounded-lg shadow-xl p-8 border border-gray-200">
+                        <div className="text-center mb-8">
+                            <h2 className="text-2xl font-bold text-gray-800 mb-2">Start your aptitude test</h2>
+                            <p className="text-gray-600">Choose your difficulty level and begin competing</p>
+                        </div>
 
                     {error && (
                         <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded mb-4">
@@ -99,18 +164,18 @@ export default function Home() {
 
                         {isCreatingRoom && (
                             <div className="mb-4">
-                                <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-2">
-                                    Quiz Difficulty
-                                </label>
+                            <label htmlFor="difficulty" className="block text-sm font-medium text-gray-700 mb-2">
+                                Aptitude Level
+                            </label>
                                 <select
                                     id="difficulty"
                                     value={difficulty}
                                     onChange={(e) => setDifficulty(e.target.value)}
                                     className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                                 >
-                                    <option value="easy">Easy</option>
-                                    <option value="medium">Medium</option>
-                                    <option value="hard">Hard</option>
+                                <option value="easy">Basic Aptitude</option>
+                                <option value="medium">Intermediate Aptitude</option>
+                                <option value="hard">Advanced Aptitude</option>
                                 </select>
                             </div>
                         )}
@@ -135,7 +200,7 @@ export default function Home() {
                         <button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full bg-blue-500 hover:bg-blue-600 disabled:bg-gray-300 text-white font-bold py-2 px-4 rounded transition-colors"
+                            className="w-full bg-indigo-600 hover:bg-indigo-700 disabled:bg-gray-300 text-white font-bold py-2 px-4 rounded transition-colors"
                         >
                             {isLoading ? "Loading..." : (isCreatingRoom ? "Create Room" : "Join Room")}
                         </button>
@@ -153,8 +218,9 @@ export default function Home() {
                             {isCreatingRoom ? "Join existing room instead" : "Create new room instead"}
                         </button>
                     </div>
+                    </div>
                 </div>
-            </div>
+            </section>
         </div>
     );
 }

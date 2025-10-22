@@ -22,13 +22,18 @@ export default function Room({ roomId, user, isHost = false }) {
 
         const onUserJoined = (data) => {
             console.log("User joined:", data);
-            // Refresh participants list
-            fetchRoomInfo();
+            // Update participants list directly
+            if (data.participants) {
+                setParticipants(data.participants);
+            }
         };
 
         const onUserLeft = (data) => {
             console.log("User left:", data);
-            fetchRoomInfo();
+            // Update participants list directly
+            if (data.participants) {
+                setParticipants(data.participants);
+            }
         };
 
         const onUpdateLeaderboard = (leaderboard) => {
@@ -77,6 +82,13 @@ export default function Room({ roomId, user, isHost = false }) {
             setLeaderboard(data.leaderboard);
         };
 
+        const onQuizEnded = (data) => {
+            console.log('Quiz ended by host:', data);
+            setGameState('finished');
+            setShowResults(true);
+            setLeaderboard(data.leaderboard);
+        };
+
         const onAnswerSubmitted = (data) => {
             console.log("Answer submitted by:", data.username);
         };
@@ -94,6 +106,7 @@ export default function Room({ roomId, user, isHost = false }) {
         socket.on("quiz-started", onQuizStarted);
         socket.on("next-question", onNextQuestion);
         socket.on("quiz-finished", onQuizFinished);
+        socket.on("quiz-ended", onQuizEnded);
         socket.on("answer-submitted", onAnswerSubmitted);
         socket.on("error", onError);
 
@@ -108,6 +121,7 @@ export default function Room({ roomId, user, isHost = false }) {
             socket.off("quiz-started", onQuizStarted);
             socket.off("next-question", onNextQuestion);
             socket.off("quiz-finished", onQuizFinished);
+            socket.off("quiz-ended", onQuizEnded);
             socket.off("answer-submitted", onAnswerSubmitted);
             socket.off("error", onError);
             socket.disconnect();
@@ -166,6 +180,10 @@ export default function Room({ roomId, user, isHost = false }) {
     const handleAnswerSelect = (answer) => {
         if (hasAnswered) return;
         setSelectedAnswer(answer);
+    };
+
+    const handleEndQuiz = () => {
+        socket.emit("end-quiz", { roomId });
     };
 
     return (
@@ -247,6 +265,18 @@ export default function Room({ roomId, user, isHost = false }) {
                                         <p className="text-sm text-gray-600">
                                             Answer submitted! Waiting for other participants...
                                         </p>
+                                    </div>
+                                )}
+
+                                {/* End Quiz Button for Host */}
+                                {isHost && (
+                                    <div className="mt-6 text-center">
+                                        <button
+                                            onClick={handleEndQuiz}
+                                            className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition-colors"
+                                        >
+                                            End Quiz
+                                        </button>
                                     </div>
                                 )}
                             </div>
